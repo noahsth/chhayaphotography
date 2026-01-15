@@ -1,0 +1,323 @@
+/* Custom CSS for Chhaya Photography Modern Website */
+
+/* Font Families */
+.font-display {
+    font-family: 'Playfair Display', serif;
+}
+
+.font-sans {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #8B1538;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #C41E3A;
+}
+
+/* Hero Image Parallax Effect - Optimized for Performance */
+.hero-image {
+    will-change: transform;
+    transform: translateZ(0) scale(1.05);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+}
+
+/* Remove hover effect on hero for better performance */
+@media (prefers-reduced-motion: no-preference) {
+    .hero-image {
+        transition: transform 0.3s ease-out;
+    }
+}
+
+/* Navbar Scroll Effect */
+.navbar-scrolled {
+    padding: 0.75rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Portfolio Filter Animation */
+.filter-btn {
+    transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+    transform: scale(1.05);
+}
+
+/* Portfolio Item Reveal Animation - Optimized */
+.portfolio-item {
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.portfolio-item img {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* Smooth Image Loading - Optimized */
+img {
+    transition: opacity 0.3s ease;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+img:not([loading="eager"]) {
+    loading: lazy;
+}
+
+/* Reduce motion for accessibility and performance */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .hero-image {
+        transform: scale(1.05);
+    }
+}
+
+img[data-loaded="false"] {
+    opacity: 0;
+}
+
+img[data-loaded="true"] {
+    opacity: 1;
+}
+
+/* Gradient Text Effect */
+.gradient-text {
+    background: linear-gradient(135deg, #8B1538 0%, #D32F2F 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Card Hover Effect */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Back to Top Button Animation */
+#back-to-top {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#back-to-top.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#back-to-top:hover {
+    transform: translateY(-5px);
+}
+
+/* Mobile Menu Animation */
+.mobile-menu {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading Animation */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    to {
+        left: 100%;
+    }
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        font-size: 2rem;
+    }
+    
+    .hero-image {
+        transform: scale(1.05);
+    }
+}
+
+/* Print Styles */
+@media print {
+    nav, footer, #back-to-top {
+        display: none;
+    }
+}
+
+/* Accessibility */
+.focus-visible:focus {
+    outline: 2px solid #8B1538;
+    outline-offset: 2px;
+}
+
+/* Selection Color */
+::selection {
+    background-color: #8B1538;
+    color: white;
+}
+
+::-moz-selection {
+    background-color: #8B1538;
+    color: white;
+}
+
+/* Custom Animations for AOS */
+[data-aos] {
+    pointer-events: none;
+}
+
+[data-aos].aos-animate {
+    pointer-events: auto;
+}
+
+/* Video Container Responsive */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Gallery Lightbox */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    animation: fadeIn 0.3s ease;
+}
+
+.lightbox.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Form Validation */
+input:invalid, textarea:invalid, select:invalid {
+    border-color: #ef4444;
+}
+
+input:valid, textarea:valid, select:valid {
+    border-color: #10b981;
+}
+
+/* Testimonial Card Hover */
+.testimonial-card {
+    transition: all 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Social Icons Pulse Effect */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.social-icon:hover {
+    animation: pulse 0.6s ease;
+}
