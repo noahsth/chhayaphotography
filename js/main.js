@@ -136,6 +136,13 @@ if (filterButtons.length > 0) {
                     item.style.display = 'none';
                 }
             });
+            
+            // Refresh AOS animations for filtered items
+            AOS.refresh();
+            
+            // Scroll to filter nav container
+            const filterNav = document.getElementById('filter-nav');
+            filterNav.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
 }
@@ -448,3 +455,4 @@ if ('IntersectionObserver' in window) {
         });
     });
 }
+
