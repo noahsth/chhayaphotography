@@ -253,49 +253,114 @@ function navigateImage(direction) {
     lightboxImg.src = img.src;
 }
 
-// Form Validation and Submission
-const contactForm = document.querySelector('#contact form');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+// Contact form submission handling with Formspree
+document.querySelectorAll('#contact-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get form data
-        const formData = new FormData(this);
-        const data = Object.fromEntries(formData);
+        const submitBtn = form.querySelector('#submit-btn');
+        const formMessage = form.querySelector('#form-message');
+        const messageText = form.querySelector('#message-text');
+        const originalBtnText = submitBtn.innerHTML;
         
-        // Simple validation
-        let isValid = true;
-        const inputs = this.querySelectorAll('input[required], textarea[required], select[required]');
+        // Get all form fields
+        const firstName = form.querySelector('input[name="firstName"]')?.value.trim() || '';
+        const lastName = form.querySelector('input[name="lastName"]')?.value.trim() || '';
+        const email = form.querySelector('input[name="email"]')?.value.trim() || '';
+        const service = form.querySelector('select[name="service"]')?.value.trim() || '';
+        const message = form.querySelector('textarea[name="message"]')?.value.trim() || '';
         
-        inputs.forEach(input => {
-            if (!input.value.trim()) {
-                isValid = false;
-                input.classList.add('border-red-500');
-            } else {
-                input.classList.remove('border-red-500');
-            }
+        console.log('Form validation:', {
+            firstName: firstName ? 'yes' : 'no',
+            lastName: lastName ? 'yes' : 'no',
+            email: email ? 'yes' : 'no',
+            service: service ? 'yes' : 'no',
+            message: message ? 'yes' : 'no'
         });
         
-        if (!isValid) {
-            alert('Please fill in all required fields.');
+        // Validate all required fields
+        if (!firstName || !lastName || !email || !service || !message) {
+            formMessage.classList.remove('hidden', 'bg-green-50', 'text-green-700');
+            formMessage.classList.add('bg-red-50', 'text-red-700');
+            messageText.textContent = 'Please fill in all required fields (First Name, Last Name, Email, Service, and Message).';
             return;
         }
         
-        // Show success message (in production, send to server)
-        alert('Thank you for your message! We will get back to you soon.');
-        this.reset();
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            formMessage.classList.remove('hidden', 'bg-green-50', 'text-green-700');
+            formMessage.classList.add('bg-red-50', 'text-red-700');
+            messageText.textContent = 'Please enter a valid email address.';
+            return;
+        }
         
-        // In production, you would send data to server:
-        // fetch('/api/contact', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // }).then(response => response.json())
-        //   .then(data => {
-        //       // Handle success
-        //   });
+        // Disable submit button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+        
+        // Create FormData
+        const formData = new FormData(form);
+        
+        // Send to Formspree
+        fetch('https://formspree.io/f/mwvonevl', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json().then(data => ({
+                status: response.status,
+                data: data
+            }));
+        })
+        .then(result => {
+            console.log('Response data:', result);
+            
+            formMessage.classList.remove('hidden');
+            
+            // Check if response is successful (status 200 or data.ok = true)
+            if (result.status === 200 || result.data.ok) {
+                formMessage.classList.remove('bg-red-50', 'text-red-700');
+                formMessage.classList.add('bg-green-50', 'text-green-700');
+                messageText.textContent = 'Thank you! Your message has been sent successfully. We will get back to you soon.';
+                
+                // Reset form after success
+                form.reset();
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    formMessage.classList.add('hidden');
+                }, 5000);
+            } else {
+                formMessage.classList.remove('bg-green-50', 'text-green-700');
+                formMessage.classList.add('bg-red-50', 'text-red-700');
+                messageText.textContent = 'Error sending message. Please try again or contact us directly.';
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            formMessage.classList.remove('hidden', 'bg-green-50', 'text-green-700');
+            formMessage.classList.add('bg-red-50', 'text-red-700');
+            messageText.textContent = 'Connection error. Please check your internet and try again.';
+            
+            // Re-enable submit button on error
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        });
     });
-}
+});
 
 // Active Navigation Link on Scroll
 const sections = document.querySelectorAll('section[id]');
@@ -421,6 +486,126 @@ if ('IntersectionObserver' in window) {
         });
     });
 }
+
+// Contact form submission handling with Formspree
+document.querySelectorAll('#contact-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = form.querySelector('#submit-btn');
+        const formMessage = form.querySelector('#form-message');
+        const messageText = form.querySelector('#message-text');
+        const originalBtnText = submitBtn.innerHTML;
+        
+        // Get all form fields
+        const firstName = form.querySelector('input[name="firstName"]')?.value.trim() || '';
+        const lastName = form.querySelector('input[name="lastName"]')?.value.trim() || '';
+        const email = form.querySelector('input[name="email"]')?.value.trim() || '';
+        const service = form.querySelector('select[name="service"]')?.value.trim() || '';
+        const message = form.querySelector('textarea[name="message"]')?.value.trim() || '';
+        
+        console.log('Form validation:', {
+            firstName: firstName ? 'yes' : 'no',
+            lastName: lastName ? 'yes' : 'no',
+            email: email ? 'yes' : 'no',
+            service: service ? 'yes' : 'no',
+            message: message ? 'yes' : 'no'
+        });
+        
+        // Validate all required fields
+        if (!firstName || !lastName || !email || !service || !message) {
+            formMessage.classList.remove('hidden', 'bg-green-50', 'text-green-700');
+            formMessage.classList.add('bg-red-50', 'text-red-700');
+            messageText.textContent = 'Please fill in all required fields (First Name, Last Name, Email, Service, and Message).';
+            return;
+        }
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            formMessage.classList.remove('hidden', 'bg-green-50', 'text-green-700');
+            formMessage.classList.add('bg-red-50', 'text-red-700');
+            messageText.textContent = 'Please enter a valid email address.';
+            return;
+        }
+        
+        // Disable submit button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+        
+        // Create FormData
+        const formData = new FormData(form);
+        
+        // Send to Formspree
+        fetch('https://formspree.io/f/mwvonevl', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json().then(data => ({
+                status: response.status,
+                data: data
+            }));
+        })
+        .then(result => {
+            console.log('Response data:', result);
+            
+            formMessage.classList.remove('hidden');
+            
+            // Check if response is successful (status 200 or data.ok = true)
+            if (result.status === 200 || result.data.ok) {
+                formMessage.classList.remove('bg-red-50', 'text-red-700');
+                formMessage.classList.add('bg-green-50', 'text-green-700');
+                messageText.textContent = 'Thank you! Your message has been sent successfully. We will get back to you soon.';
+                
+                // Reset form after success
+                form.reset();
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    formMessage.classList.add('hidden');
+                }, 5000);
+            } else {
+                formMessage.classList.remove('bg-green-50', 'text-green-700');
+                formMessage.classList.add('bg-red-50', 'text-red-700');
+                messageText.textContent = 'Error sending message. Please try again or contact us directly.';
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            formMessage.classList.remove('hidden', 'bg-green-50', 'text-green-700');
+            formMessage.classList.add('bg-red-50', 'text-red-700');
+            messageText.textContent = 'Connection error. Please check your internet and try again.';
+            
+            // Re-enable submit button on error
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        });
+    });
+});
+
+// Console Message
+console.log('%c🎨 Chhaya Photography', 'font-size: 20px; font-weight: bold; color: #8B1538;');
+console.log('%cWebsite designed with ❤️', 'font-size: 14px; color: #666;');
+
+// Prevent right-click on images (optional, for image protection)
+// Uncomment if needed
+// document.querySelectorAll('img').forEach(img => {
+//     img.addEventListener('contextmenu', e => e.preventDefault());
+// });
+
 // Performance Optimization - Lazy loading and will-change cleanup
 if ('IntersectionObserver' in window) {
     window.addEventListener('load', function() {
@@ -456,3 +641,28 @@ if ('IntersectionObserver' in window) {
     });
 }
 
+
+// Phone Number Formating
+document.addEventListener('DOMContentLoaded', () => {
+    const phoneInput = document.getElementById('phone-input');
+
+    // Only run the code if the phone input actually exists on the current page
+    if (phoneInput) {
+        phoneInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); 
+            value = value.substring(0, 10);
+            
+            let formattedValue = '';
+            if (value.length > 0) {
+                formattedValue = '(' + value.substring(0, 3);
+                if (value.length >= 4) {
+                    formattedValue += ') ' + value.substring(3, 6);
+                }
+                if (value.length >= 7) {
+                    formattedValue += '-' + value.substring(6, 10);
+                }
+            }
+            e.target.value = formattedValue;
+        });
+    }
+});
